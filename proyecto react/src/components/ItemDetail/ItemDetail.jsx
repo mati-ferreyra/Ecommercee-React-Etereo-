@@ -2,6 +2,18 @@ import ItemCount from '../ItemCount/ItemCount'
 
 
 const ItemDetail = ({id, nombre, img, categoria, descripcion, precio, stock})  => {
+    
+    const handleOnAdd = (quantity) => {
+        const objProduct = {
+            id,
+            nombre,
+            quantity,
+            precio
+        }
+
+        console.log('El producto: ' ,objProduct , ' se agrego correctamente')
+    }
+    
     return (
         <article className="CardItem">
             <header className="Header">
@@ -25,7 +37,7 @@ const ItemDetail = ({id, nombre, img, categoria, descripcion, precio, stock})  =
                 </p>
             </section>
             <footer className="ItemFooter">
-                <ItemCount initial={1} stock={stock} onAdd={(quantity) => console.log('Cantidad Agregada' ,)} />
+                <ItemCount initial={1} stock={stock} onAdd={(count) => console.log('Cantidad Agregada' ,)} />
             </footer>
         </article>
     )

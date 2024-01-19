@@ -7,9 +7,9 @@ const Item = ({id, nombre, img, precio, stock})  => {
             <header className="Header">
                 <h2 className="NameHeader">{nombre}</h2>
             </header>
-            <picture>
-                <img src={img} alt={nombre} className="ItemImg" />
-            </picture>
+           
+            <img src={img} alt={nombre} className="ItemImg" />
+           
             <section>
                 <p className="Info">
                     Precio: ${precio}
@@ -19,7 +19,7 @@ const Item = ({id, nombre, img, precio, stock})  => {
                 </p>
             </section>
             <footer className="ItemFooter">
-                <Link to={`/item/${id}`} className="Option">Ver detalle</Link>
+                <Link to={`/detail/${id}`} className="Option">Ver detalle</Link>
             </footer>
         </article>
     )
