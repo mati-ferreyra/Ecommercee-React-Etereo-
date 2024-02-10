@@ -34,3 +34,17 @@ body{
 .ItemImg{
   width: 200px;
 }
+
+
+.carrito{
+  display: flex;
+  flex-direction: flex;
+  align-items: center;
+  text-align: center;
+  background-color: beige;
+  color: black;
+  width: 100%;
+  border-radius: 30px;
+  margin-top: 50px;
+  justify-content: space-around;
+}
