@@ -1,84 +1,79 @@
 import { useCart } from "../../context/CartContext";
+import OrderForm from "../OrderForm/OrderForm";
 import { db } from "../../services/firebase/firebaseConfig";
-import CheckoutForm from "../CheckOutForm/CheckOutForm";
+import { collection, getDocs, where, query, documentId, writeBatch, addDoc } from "firebase/firestore";
 import { useState } from "react";
+import Swal from 'sweetalert2'
 
 
-const Checkout = () => {
-    const [loading, setLoading] = useState(false)
+const CheckOut = () => {
     const [orderId, setOrderId] = useState(null)
-    const { cart, total, clearCart } = useCart()
+    const { cart, total } = useCart()
 
-    const createOrder = async () => {
-        setLoading(true)
+    const createOrder = async (userData) => {
         try {
             const objOrder = {
-                buyer: { 
-                    name: '',
-                    email: '',
-                    phone: ''
-                },
+                buyer: userData,
                 items: cart,
-                total 
+                total
             }
-    
+
             const batch = writeBatch(db)
             const outOfStock = []
-    
             const ids = cart.map(prod => prod.id)
             const productsCollection = query(collection(db, 'products'), where(documentId(), 'in', ids))
-    
-            // getDocs(productsCollection).then(querySnapshot => {})
+
             const querySnapshot = await getDocs(productsCollection)
             const { docs } = querySnapshot
-            
+
             docs.forEach(doc => {
                 const fields = doc.data()
                 const stockDb = fields.stock
-    
-                const productsAddedToCart = cart.find(prod => prod.id === doc.id)
-                const prodQuantity = productsAddedToCart.quantity
-                console.log(stockDb >= prodQuantity)
-                if(stockDb >= prodQuantity) {
-                    batch.update(doc.ref, { stock: stockDb - prodQuantity})
+
+                const productAddedToCart = cart.find(prod => prod.id === doc.id)
+                const prodQuantity = productAddedToCart.quantity
+
+                if (stockDb >= prodQuantity) {
+                    batch.update(doc.ref, { stock: stockDb - prodQuantity })
                 } else {
-                    outOfStock.push({ id: doc.id, ...fields})
+                    outOfStock.push({ id: doc.id, ...fields })
                 }
             })
-    
-            if(outOfStock.length === 0) {
-                batch.commit()
-    
-                const orderCollection = collection(db, 'orders')
-                const { id } = await addDoc(orderCollection, objOrder)
-                
-                setOrderId(id)
 
-                clearCart()
+            if (outOfStock.length === 0) {
+                await batch.commit()
+
+                const orderCollection = collection(db, 'orders')
+
+                const { id } = await addDoc(orderCollection, objOrder)
+                setOrderId(id)
             } else {
-                console.error('error', 'Hay productos que no tienen stock disponible')
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Hay productos que no tienen stock disponible",
+                  });
             }
         } catch (error) {
-            console.error('error', 'Hubo un error al crear la orden')
-        } finally {
-            setLoading(false)
+            Swal.fire({
+                icon: "error",
+                title: "Lo sentimos",
+                text: "Hubo un error al crear la orden",
+               
+              });
         }
-        
     }
 
-
-    if(orderId) {
-        return <h1>El id de su compra es: {orderId}</h1>
+    if (orderId) {
+        return <h2>El id de su orden es: {orderId}</h2>
     }
-  
 
-  
     return (
-      <>
-        <h1>CHECKOUT</h1>
-        <CheckoutForm createOrder={createOrder} />
-      </>
+        <>
+            <h1>Checkout</h1>
+            <OrderForm createOrder={createOrder} />
+        </>
     );
-  };
-  
-  export default Checkout;
+}
+
+export default CheckOut;

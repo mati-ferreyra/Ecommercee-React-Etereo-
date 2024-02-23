@@ -2,6 +2,8 @@ import { useContext, useState } from 'react'
 import ItemCount from '../ItemCount/ItemCount'
 import { Link } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
+import Swal from 'sweetalert2'
+
 
 
 const ItemDetail = ({id, nombre, img, category, descripcion, precio, stock})  => {
@@ -15,9 +17,13 @@ const ItemDetail = ({id, nombre, img, category, descripcion, precio, stock})  =>
             id, nombre, precio, quantity
         }
         console.log(objProductToAdd)
-
         addItem(objProductToAdd)
+        Swal.fire({
+            icon: "success",
+            title: `Se agregaron correctamente ${quantity} ${nombre}`,
+          });
         setQuantity(quantity)
+        
     }
 
 

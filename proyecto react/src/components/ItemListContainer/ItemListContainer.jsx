@@ -3,6 +3,7 @@ import ItemList from "../ItemList/ItemList"
 import { useParams } from "react-router-dom"
 import { db } from "../../services/firebase/firebaseConfig"
 import { getDocs, collection, where, query } from "firebase/firestore"
+import Swal from 'sweetalert2'
 
 
 
@@ -31,7 +32,12 @@ const ItemListContainer = ({greeting}) => {
             setProducts(productsAdapted)
 
             .catch(error => {
-                console.error('Hubo un error')
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Hubo un error",
+                    
+                  });
             })
         })
 

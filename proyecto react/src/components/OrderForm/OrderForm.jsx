@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
-const CheckoutForm = ({ createOrder }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+const OrderForm = ({ createOrder }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,6 +45,6 @@ const CheckoutForm = ({ createOrder }) => {
       <button type="submit">Generar orden</button>
     </form>
   );
-};
+} ;
 
-export default CheckoutForm;
+export default OrderForm;
